@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Dialog, { DialogTitle, DialogContent, DialogFooter, DialogButton } from "@material/react-dialog";
-import { Input, TextField } from "@episerver/ui-framework";
+import { TextField } from "@episerver/ui-framework";
 import MaterialIcon from "@material/react-material-icon";
 
 import "./external-review-share-dialog.scss";
@@ -55,14 +55,6 @@ const ShareDialog = ({ open, onClose, initialSubject, initialMessage, resources 
         return emailReg.test(str);
     };
 
-    const textAreaProps = {
-        textarea: true
-    };
-
-    const isValidProps = {
-        isValid: isValidEmail
-    };
-
     return (
         <Dialog open={open} scrimClickAction="" escapeKeyAction="" onClose={onDialogClose}>
             <DialogTitle>{resources.sharedialog.dialogtitle}</DialogTitle>
@@ -73,9 +65,10 @@ const ShareDialog = ({ open, onClose, initialSubject, initialMessage, resources 
                         style={{ width: "100%" }}
                         autoFocus
                         required
-                    >
-                        <Input value={email} onChange={onEmailTextChanged} {...isValidProps} />
-                    </TextField>
+                        value={email}
+                        onChange={onEmailTextChanged}
+                        invalid={!isValidEmail}
+                    />
                 </div>
                 <div className="text-field-container">
                     <TextField
@@ -83,26 +76,20 @@ const ShareDialog = ({ open, onClose, initialSubject, initialMessage, resources 
                         autoFocus
                         required
                         style={{ width: "100%" }}
-                    >
-                        <Input
-                            value={subject}
-                            onChange={(event: React.FormEvent<any>) => setSubject(event.currentTarget.value)}
-                        />
-                    </TextField>
+                        value={subject}
+                        onChange={(event: React.FormEvent<any>) => setSubject(event.currentTarget.value)}
+                    />
                 </div>
                 <div className="text-field-container">
                     <TextField
                         label={resources.sharedialog.emailmessagelabel}
                         required
                         style={{ width: "100%" }}
-                        {...textAreaProps}
-                    >
-                        <Input
-                            rows={15}
-                            value={message}
-                            onChange={(e: React.FormEvent<any>) => setMessage(e.currentTarget.value)}
-                        />
-                    </TextField>
+                        rows={15}
+                        value={message}
+                        onChange={(e: React.FormEvent<any>) => setMessage(e.currentTarget.value)}
+                        textarea={true}
+                    />
                 </div>
             </DialogContent>
             <DialogFooter>

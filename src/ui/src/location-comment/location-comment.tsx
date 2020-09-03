@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { inject } from "mobx-react";
-import { Input, TextField } from "@episerver/ui-framework";
+import { TextField } from "@episerver/ui-framework";
 import { IconButton } from "@episerver/ui-framework";
 import MaterialIcon from "@material/react-material-icon";
 import { DropDownMenu } from "../common/drop-down-menu";
@@ -17,35 +17,26 @@ interface LocationCommentProps {
 }
 
 const LocationComment = inject("resources")((props: LocationCommentProps) => {
-    const [commentInput, setCommentInput] = useState(null);
+    const commentInput = useRef(null);
 
     useEffect(() => {
         if (commentInput) {
-            commentInput.inputElement.focus();
+            commentInput.current.focus();
         }
     });
 
     const resources = props.resources!;
 
-    const textAreaProps = {
-        textarea: true
-    };
-
     return (
         <>
             <TextField
+                value={props.value}
+                inputRef={commentInput}
+                onChange={(e: React.FormEvent<any>) => props.onChange(e.currentTarget.value, props.currentScreenshot)}
                 className="location-comment-field"
                 label={`${resources.dialog.addcomment}...`}
-                {...textAreaProps}
-            >
-                <Input
-                    ref={(input: any) => setCommentInput(input)}
-                    value={props.value}
-                    onChange={(e: React.FormEvent<any>) =>
-                        props.onChange(e.currentTarget.value, props.currentScreenshot)
-                    }
-                />
-            </TextField>
+                textarea={true}
+            />
             {props.allowScreenshotAttachments && (
                 <>
                     {!props.currentScreenshot && (

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { EventHandler, useState } from "react";
 
-import Dialog, { DialogTitle, DialogContent, DialogFooter, DialogButton } from "@material/react-dialog";
-import { Input, TextField } from "@episerver/ui-framework";
+// import Dialog, { DialogTitle, DialogContent, DialogFooter, DialogButton } from "@material/react-dialog";
+import { Dialog, DialogOnInteractionEvent, TextField } from "@episerver/ui-framework";
 
 import "@material/react-dialog/index.scss";
 
@@ -14,39 +14,36 @@ interface ConfirmDialogProps {
 const ConfirmDialog = ({ open, onClose, initialUserName }: ConfirmDialogProps) => {
     const [userName, setUserName] = useState<string>(initialUserName);
 
-    const onDialogClose = (action: string) => {
-        if (action !== "save") {
-            onClose(null);
-            return;
-        }
-
-        onClose(userName);
-    };
-
-    const inputProps = {
-        isValid: !!userName
-    };
-
     return (
-        <Dialog open={open} scrimClickAction="" escapeKeyAction="" onClose={onDialogClose}>
-            <DialogTitle>Confirm your name</DialogTitle>
-            <DialogContent>
+        <Dialog
+            title="Confirm your name"
+            open={open}
+            onInteraction={({ detail: { action } }) => {
+                if (action !== "save") {
+                    onClose(null);
+                    return;
+                }
+
+                onClose(userName);
+            }}
+            confirmLabel="Save"
+            dismissLabel="Cancel"
+            enableConfirm={!!userName}
+        >
+            <>
                 <p>Please enter your name. It will be used as an author of the comments.</p>
                 <div>
-                    <TextField label="Display name" autoFocus required style={{ width: "100%" }}>
-                        <Input
-                            value={userName}
-                            onChange={(e: React.FormEvent<any>) => setUserName(e.currentTarget.value)}
-                            {...inputProps}
-                        />
-                    </TextField>
+                    <TextField
+                        onChange={(e: React.FormEvent<any>) => setUserName(e.currentTarget.value)}
+                        value={userName}
+                        label="Display name"
+                        autoFocus
+                        invalid={!userName}
+                        required
+                        style={{ width: "100%" }}
+                    />
                 </div>
-            </DialogContent>
-            <DialogFooter>
-                <DialogButton raised dense action="save" disabled={!userName} isDefault>
-                    Save
-                </DialogButton>
-            </DialogFooter>
+            </>
         </Dialog>
     );
 };

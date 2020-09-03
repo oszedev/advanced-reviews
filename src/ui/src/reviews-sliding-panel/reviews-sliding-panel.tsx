@@ -185,9 +185,11 @@ export default class SlidingPanel extends React.Component<SlidingPanelProps, any
                 {!this.state.panelVisible && (
                     <>
                         <div className="panel-container-settings narrow">
-                            <IconButton title={res.panel.expand} onClick={this.showPanel}>
-                                <MaterialIcon icon="first_page" />
-                            </IconButton>
+                            <IconButton
+                                icon={<MaterialIcon icon="first_page" />}
+                                title={res.panel.expand}
+                                onClick={this.showPanel}
+                            />
                         </div>
                         <div className={classNames("panel-container narrow", filter.reviewMode ? "review-mode" : "")}>
                             <Legend filter={filter} />
@@ -197,15 +199,18 @@ export default class SlidingPanel extends React.Component<SlidingPanelProps, any
                 {this.state.panelVisible && (
                     <>
                         <div className="panel-container-settings">
-                            <IconButton className="close-panel" onClick={this.hidePanel} title={res.panel.collapse}>
-                                <MaterialIcon icon="last_page" />
-                            </IconButton>
+                            <IconButton
+                                icon={<MaterialIcon icon="last_page" />}
+                                className="close-panel"
+                                onClick={this.hidePanel}
+                                title={res.panel.collapse}
+                            />
                         </div>
                         <div className="panel-container">
                             {editedPinLocation && (
                                 <div className="panel-header">
                                     <Checkbox
-                                        nativeControlId="resolved"
+                                        id="resolved"
                                         checked={this.props.reviewStore.editedPinLocation.isDone}
                                         onChange={this.resolveTask}
                                     />
@@ -227,14 +232,10 @@ export default class SlidingPanel extends React.Component<SlidingPanelProps, any
                                 <>
                                     <Filters filter={filter} />
                                     <h3>List of Pins</h3>
-                                    <List
-                                        singleSelection
-                                        selectedIndex={this.props.reviewStore.selectedPinLocationIndex}
-                                        handleSelect={activatedIndex => this.onSelected(activatedIndex)}
-                                        className="locations"
-                                    >
-                                        {reviewLocations.map(location => (
+                                    <List onAction={e => this.onSelected(e.detail)} className="locations">
+                                        {reviewLocations.map((location, index) => (
                                             <ListItem
+                                                selected={index === this.props.reviewStore.selectedPinLocationIndex}
                                                 title={res.panel.clicktoedit}
                                                 key={location.id}
                                                 onDoubleClick={e => this.onEditClick(e, location)}

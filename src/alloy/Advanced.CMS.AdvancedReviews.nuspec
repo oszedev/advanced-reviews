@@ -9,14 +9,14 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Context aware smart reviewing. Allow external reviewers to access unpublished data. Provide token-based, expirable links to any content version. Visually express issues in reviewed content by highlighting or adding screenshots.</description>
     <releaseNotes/>
-    <copyright>Copyright 2019</copyright>
+    <copyright>Copyright 2020</copyright>
     <tags>review preview content approval external</tags>
     <license type="expression">MIT</license>
     <iconUrl>https://raw.githubusercontent.com/advanced-cms/advanced-reviews/master/assets/logo.png</iconUrl>
     <projectUrl>https://github.com/advanced-cms/advanced-reviews</projectUrl>
     <dependencies>
-      <dependency id="EPiServer.CMS.Core" version="[11.12,12.0)" />
-      <dependency id="EPiServer.CMS.UI" version="[11.22,12.0)" />
+      <dependency id="EPiServer.CMS.Core" version="[11.18.1,12.0)" />
+      <dependency id="EPiServer.CMS.UI" version="[11.28,12.0)" />
     </dependencies>
   </metadata>
   <files>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import { format, parse } from "date-fns";
 import Dialog, { DialogTitle, DialogContent, DialogFooter, DialogButton } from "@material/react-dialog";
-import { Checkbox, Input, TextButton, TextField } from "@episerver/ui-framework";
+import { Checkbox, TextButton, TextField } from "@episerver/ui-framework";
 import { ReviewLink } from "./external-review-links-store";
 import "@material/react-dialog/index.scss";
 
@@ -45,7 +45,7 @@ const LinkEditDialog = observer(
             onClose(parse(validDate), newPin, displayName);
         };
 
-        const updatePinCode = (event: React.FormEvent<HTMLInputElement>) => {
+        const updatePinCode = (event: React.FormEvent<any>) => {
             const newValue = event.currentTarget.value;
             if (!!newValue && !/^\d+$/.test(newValue)) {
                 return;
@@ -86,7 +86,7 @@ const LinkEditDialog = observer(
                             {!!reviewLink.pinCode && (
                                 <>
                                     <Checkbox
-                                        nativeControlId="pinCodeActive"
+                                        id="pinCodeActive"
                                         checked={shouldUpdatePinCode}
                                         onChange={() => setShouldUpdatePinCode(!shouldUpdatePinCode)}
                                     />
@@ -96,20 +96,17 @@ const LinkEditDialog = observer(
                                 </>
                             )}
                             <TextField
+                                name="pin-code"
+                                autoComplete="new-password"
+                                disabled={!shouldUpdatePinCode}
+                                value={pinCode}
+                                onChange={updatePinCode}
+                                required={pinCodeSecurityRequired}
+                                type="password"
+                                maxLength={pinCodeLength}
                                 label={`${resources.list.editdialog.pincode} (${pinCodeLength} ${resources.list.editdialog.digits})`}
                                 style={{ width: "100%" }}
-                            >
-                                <Input
-                                    name="pin-code"
-                                    autoComplete="new-password"
-                                    disabled={!shouldUpdatePinCode}
-                                    value={pinCode}
-                                    onChange={updatePinCode}
-                                    required={pinCodeSecurityRequired}
-                                    type="password"
-                                    maxLength={pinCodeLength}
-                                />
-                            </TextField>
+                            />
                             <div className="mdc-text-field-helper-line">
                                 <p className="mdc-text-field-helper-text mdc-text-field-helper-text--persistent">
                                     {!!pinCode
@@ -120,15 +117,14 @@ const LinkEditDialog = observer(
                         </div>
                     )}
                     <div className="field-group">
-                        <TextField label={resources.list.editdialog.displayname} style={{ width: "100%" }} autoFocus>
-                            <Input
-                                name="display-name"
-                                value={displayName}
-                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                                    setDisplayName(event.currentTarget.value)
-                                }
-                            />
-                        </TextField>
+                        <TextField
+                            name="display-name"
+                            value={displayName}
+                            onChange={(event: React.FormEvent<any>) => setDisplayName(event.currentTarget.value)}
+                            label={resources.list.editdialog.displayname}
+                            style={{ width: "100%" }}
+                            autoFocus
+                        />
                         <div className="mdc-text-field-helper-line">
                             <p className="mdc-text-field-helper-text mdc-text-field-helper-text--persistent">
                                 {resources.list.editdialog.displaynamehelptext}

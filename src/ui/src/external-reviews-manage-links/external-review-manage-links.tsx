@@ -3,9 +3,9 @@ import { observer } from "mobx-react-lite";
 import { format } from "date-fns";
 import { ContextMenu } from "../common/context-menu";
 import Confirmation from "../confirmation/confirmation";
-import { IconButton } from "@episerver/ui-framework";
+import { IconButton, Typography } from "@episerver/ui-framework";
 import MaterialIcon from "@material/react-material-icon";
-import { List, ListItem, ListItemGraphic, ListItemText } from "@episerver/ui-framework";
+import { List, ListItem, ListItemGraphic } from "@episerver/ui-framework";
 import { IExternalReviewStore, ReviewLink } from "./external-review-links-store";
 import ShareDialog, { LinkShareResult } from "./external-review-share-dialog";
 import LinkEditDialog from "./external-review-manage-links-edit";
@@ -97,6 +97,10 @@ const ExternalReviewWidgetContent = observer(
             }
         ];
 
+        const extraProps = {
+            twoLine: true
+        };
+
         return (
             <>
                 {store.links.length === 0 && (
@@ -120,15 +124,11 @@ const ExternalReviewWidgetContent = observer(
 
                             return (
                                 <ListItem key={item.token} className="list-item">
-                                    {editableLinksEnabled && <ListItemGraphic graphic={icon} />}
-                                    <ListItemText
-                                        primaryText={link}
-                                        secondaryText={
-                                            resources.list.itemvalidto +
-                                            ": " +
-                                            format(item.validTo, "MMM Do YYYY HH:mm")
-                                        }
-                                    />
+                                    {editableLinksEnabled && <ListItemGraphic icon={icon} />}
+                                    {link}
+                                    <Typography use={"subtitle2"}>
+                                        {resources.list.itemvalidto + ": " + format(item.validTo, "MMM Do YYYY HH:mm")}
+                                    </Typography>
                                     <div className="info-icons">
                                         {item.pinCode && pinCodeSecurityEnabled && (
                                             <MaterialIcon
@@ -141,7 +141,7 @@ const ExternalReviewWidgetContent = observer(
                                             <span
                                                 className="dijitReset dijitInline dijitIcon epi-iconProject"
                                                 title={resources.list.projectname + ": " + item.projectName}
-                                            ></span>
+                                            />
                                         )}
                                     </div>
                                     <IconButton

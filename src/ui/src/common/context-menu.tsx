@@ -1,7 +1,7 @@
 import React from "react";
 import { DropDownMenu } from "./drop-down-menu";
 
-import { List, ListItem, ListItemGraphic, ListItemText } from "@episerver/ui-framework";
+import { List, ListActionEvent, ListItem, ListItemGraphic, ListItemText } from "@episerver/ui-framework";
 import MaterialIcon from "@material/react-material-icon";
 
 interface MenuItem {
@@ -26,8 +26,8 @@ export class ContextMenu extends React.Component<ContextMenuProps, any> {
         };
     }
 
-    onSelected = (index: number) => {
-        const menuItem = this.props.menuItems[index];
+    onSelected = (e: ListActionEvent) => {
+        const menuItem = this.props.menuItems[e.detail];
         menuItem.onSelected();
         this.setState({ title: menuItem.name });
         this.dropDownMenu.closeMenu();
@@ -35,11 +35,11 @@ export class ContextMenu extends React.Component<ContextMenuProps, any> {
 
     render() {
         const list = (
-            <List singleSelection handleSelect={this.onSelected}>
+            <List onAction={this.onSelected}>
                 {this.props.menuItems.map(item => (
                     <ListItem key={item.name}>
-                        {item.icon ? <ListItemGraphic graphic={<MaterialIcon icon={item.icon} />} /> : null}
-                        <ListItemText primaryText={item.name} />
+                        {item.icon ? <ListItemGraphic icon={<MaterialIcon icon={item.icon} />} /> : null}
+                        <ListItemText>{item.name}</ListItemText>
                     </ListItem>
                 ))}
             </List>

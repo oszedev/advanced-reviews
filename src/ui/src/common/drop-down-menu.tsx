@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Corner, MenuSurface } from "@episerver/ui-framework";
+import { Menu } from "@episerver/ui-framework";
 import MaterialIcon from "@material/react-material-icon";
 
 import "./drop-down-menu.scss";
@@ -43,15 +43,15 @@ export class DropDownMenu extends React.Component<DropDownMenuProps, any> {
                     onClick={this.openMenu}
                     title={this.props.title}
                 />
-                <MenuSurface
+                <Menu
                     className="epi-context-menu"
                     open={this.state.isMenuOpen}
-                    anchorCorner={Corner.BOTTOM_LEFT}
+                    anchorCorner="bottomLeft"
                     onClose={this.closeMenu}
-                    anchorElement={this.state.anchorElement}
+                    // anchorElement={this.state.anchorElement}
                 >
                     {this.props.children}
-                </MenuSurface>
+                </Menu>
             </div>
         );
     }

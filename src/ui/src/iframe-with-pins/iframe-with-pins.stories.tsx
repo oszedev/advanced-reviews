@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, TextField } from "@episerver/ui-framework";
+import { TextField } from "@episerver/ui-framework";
 import { storiesOf } from "@storybook/react";
 import { Provider } from "mobx-react";
 import { createStores } from "../store/review-store";
@@ -45,9 +45,11 @@ function Component({ initialLocale = "en" }) {
             </div>
             {!!anchorElement && iframeLoaded && <IframeWithPins iframe={anchorElement} />}
             <div className="user-picker">
-                <TextField label="Current user">
-                    <Input value={text} onChange={(e: React.FormEvent<any>) => setText(e.currentTarget.value)} />
-                </TextField>
+                <TextField
+                    label="Current user"
+                    value={text}
+                    onChange={(e: React.FormEvent<any>) => setText(e.currentTarget.value)}
+                />
             </div>
         </div>
     );
