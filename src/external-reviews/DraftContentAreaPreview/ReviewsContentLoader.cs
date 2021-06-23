@@ -78,7 +78,7 @@ namespace AdvancedExternalReviews.DraftContentAreaPreview
             ContentReference referenceWithoutVersion = contentLink.ToReferenceWithoutVersion();
             if (referenceWithoutVersion == ContentReference.WasteBasket)
             {
-                return _contentLoader.GetChildren<T>(contentLink);
+                return _contentLoader.GetChildren<T>(contentLink, loaderOptions, startIndex, maxRows);
             }
 
             var provider = _contentProviderManager.ProviderMap.GetProvider(referenceWithoutVersion);
@@ -99,7 +99,12 @@ namespace AdvancedExternalReviews.DraftContentAreaPreview
                 }
                 else
                 {
-                    var content = _contentLoader.Get<T>(referenceToLoad);
+                    var content = _contentLoader.Get<T>(referenceToLoad, loaderOptions);
+                    if (content == null)
+                    {
+                        continue;
+                    }
+
                     if (!(content is IVersionable versionable))
                     {
                         result.Add(childReference.ContentLink);
@@ -122,7 +127,7 @@ namespace AdvancedExternalReviews.DraftContentAreaPreview
                 }
             }
 
-            var childrenWithReviews = result.Select(_contentLoader.Get<T>).ToList();
+            var childrenWithReviews = result.Select(x => _contentLoader.Get<T>(x, loaderOptions)).Where(y => y != null).ToList();
 
 
             if (childrenWithReviews.Count > 0)
