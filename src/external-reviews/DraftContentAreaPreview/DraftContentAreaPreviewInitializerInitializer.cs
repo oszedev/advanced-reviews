@@ -1,4 +1,5 @@
-﻿using EPiServer;
+﻿using AdvancedExternalReviews.ReviewLinksRepository;
+using EPiServer;
 using EPiServer.Core;
 using EPiServer.Core.Internal;
 using EPiServer.Framework;
@@ -26,11 +27,11 @@ namespace AdvancedExternalReviews.DraftContentAreaPreview
 
             // Intercepted in order to return unpublished children in external review context
             context.Services.Intercept<IContentLoader>(
-                (locator, defaultContentLoader) => new DraftContentLoader(defaultContentLoader, locator.GetInstance<ServiceAccessor<ReviewsContentLoader>>()));
+                (locator, defaultContentLoader) => new DraftContentLoader(defaultContentLoader, locator.GetInstance<ServiceAccessor<ReviewsContentLoader>>(), locator.GetInstance<ServiceAccessor<IExternalReviewLinksRepository>>()));
 
             // Intercepted in order to return unpublished children in external review context
             context.Services.Intercept<ContentLoader>(
-                (locator, defaultContentLoader) => new DraftContentLoader(defaultContentLoader, locator.GetInstance<ServiceAccessor<ReviewsContentLoader>>()));
+                (locator, defaultContentLoader) => new DraftContentLoader(defaultContentLoader, locator.GetInstance<ServiceAccessor<ReviewsContentLoader>>(), locator.GetInstance<ServiceAccessor<IExternalReviewLinksRepository>>()));
 
             // Intercepted in order to return unpublished content items
             context.Services.Intercept<IPublishedStateAssessor>(

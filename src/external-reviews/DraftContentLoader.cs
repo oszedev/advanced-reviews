@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using AdvancedExternalReviews.DraftContentAreaPreview;
+using AdvancedExternalReviews.ReviewLinksRepository;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Core.Internal;
@@ -12,13 +13,15 @@ namespace AdvancedExternalReviews
 {
     public class DraftContentLoader : ContentLoader
     {
+        private readonly ServiceAccessor<IExternalReviewLinksRepository> _externalReviewLinksRepository;
         private readonly IContentLoader _defaultContentLoader;
         private readonly ServiceAccessor<ReviewsContentLoader> _reviewsContentLoader;
 
-        public DraftContentLoader(IContentLoader defaultContentLoader, ServiceAccessor<ReviewsContentLoader> reviewsContentLoader)
+        public DraftContentLoader(IContentLoader defaultContentLoader, ServiceAccessor<ReviewsContentLoader> reviewsContentLoader, ServiceAccessor<IExternalReviewLinksRepository> externalReviewLinksRepository)
         {
             _defaultContentLoader = defaultContentLoader;
             _reviewsContentLoader = reviewsContentLoader;
+            _externalReviewLinksRepository = externalReviewLinksRepository;
         }
 
         public override T Get<T>(Guid contentGuid)
@@ -53,7 +56,7 @@ namespace AdvancedExternalReviews
 
         public override IEnumerable<T> GetChildren<T>(ContentReference contentLink)
         {
-            if (!ExternalReview.IsInExternalReviewContext)
+            if (UseDefaultLoader(contentLink))
             {
                 return _defaultContentLoader.GetChildren<T>(contentLink);
             }
@@ -63,7 +66,7 @@ namespace AdvancedExternalReviews
 
         public override IEnumerable<T> GetChildren<T>(ContentReference contentLink, CultureInfo language)
         {
-            if (!ExternalReview.IsInExternalReviewContext)
+            if (UseDefaultLoader(contentLink))
             {
                 return _defaultContentLoader.GetChildren<T>(contentLink, language);
             }
@@ -73,7 +76,7 @@ namespace AdvancedExternalReviews
 
         public override IEnumerable<T> GetChildren<T>(ContentReference contentLink, LoaderOptions settings)
         {
-            if (!ExternalReview.IsInExternalReviewContext)
+            if (UseDefaultLoader(contentLink))
             {
                 return _defaultContentLoader.GetChildren<T>(contentLink, settings);
             }
@@ -83,7 +86,7 @@ namespace AdvancedExternalReviews
 
         public override IEnumerable<T> GetChildren<T>(ContentReference contentLink, CultureInfo language, int startIndex, int maxRows)
         {
-            if (!ExternalReview.IsInExternalReviewContext)
+            if (UseDefaultLoader(contentLink))
             {
                 return _defaultContentLoader.GetChildren<T>(contentLink, language, startIndex, maxRows);
             }
@@ -93,7 +96,7 @@ namespace AdvancedExternalReviews
 
         public override IEnumerable<T> GetChildren<T>(ContentReference contentLink, LoaderOptions settings, int startIndex, int maxRows)
         {
-            if (!ExternalReview.IsInExternalReviewContext)
+            if (UseDefaultLoader(contentLink))
             {
                 return _defaultContentLoader.GetChildren<T>(contentLink, settings, startIndex, maxRows);
             }
@@ -159,6 +162,22 @@ namespace AdvancedExternalReviews
         public override bool TryGet<T>(Guid contentGuid, LoaderOptions loaderOptions, out T content)
         {
             return _defaultContentLoader.TryGet(contentGuid, loaderOptions, out content);
+        }
+
+        private bool UseDefaultLoader(ContentReference contentLink)
+        {
+            if (!ExternalReview.IsInExternalReviewContext)
+            {
+                return true;
+            }
+
+            var externalReviewLink = _externalReviewLinksRepository().GetContentByToken(ExternalReview.Token);
+            if (!externalReviewLink.ContentLink.CompareToIgnoreWorkID(contentLink))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
